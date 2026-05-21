@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fake News Detector</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 20px;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        video.bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .container {
+            background: rgba(0,0,0,0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 36px;
+            color: #fffa;
+            text-shadow: 2px 2px 8px #000;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            border-radius: 10px;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            resize: none;
+        }
+
+        input[type="submit"] {
+            padding: 12px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            background: #ff6b6b;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background: #ff4757;
+            transform: scale(1.05);
+        }
+
+        .result {
+            margin-top: 25px;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .real {
+            color: #2ed573;
+        }
+
+        .fake {
+            color: #ff4757;
+        }
+
+        .news {
+            margin-top: 15px;
+            font-size: 18px;
+            word-wrap: break-word;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Video -->
+    <video class="bg-video" autoplay muted loop>
+        <source src="https://media.istockphoto.com/id/1433485090/video/dots-makes-global-world-map-global-wireframe-polygonal-lines.mp4?s=mp4-640x640-is&k=20&c=sq6YLe16A6IHmmRTOV0BqHCUAUcXC68LYBr8PZtY87g=" type="video/mp4">
+    </video>
+
+    <div class="container">
+        <h1>Fake News Detector</h1>
+
+        <form method="POST" action="/predict">
+            <textarea name="news" placeholder="Enter news text here..." required></textarea>
+            <br>
+            <input type="submit" value="Check News">
+        </form>
+
+        <!-- ✅ FIXED RESULT PART -->
+        {% if result %}
+            <div class="result 
+                {% if 'FAKE' in result.Final %}fake{% else %}real{% endif %}">
+                {{ result.Final }}
+            </div>
+
+            <div class="news">
+                <p><strong>📅 Year:</strong> {{ result.Year }}</p>
+                <p><strong>📰 News:</strong> {{ request.form.news }}</p>
+
+                {% if result.Source %}
+                <p><strong>🌐 Source:</strong> {{ result.Source }}</p>
+                {% endif %}
+
+                {% if result.ML %}
+                <p><strong>🤖 ML Result:</strong> {{ result.ML }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
